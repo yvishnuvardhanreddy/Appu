@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aparna — Proposal</title>
+<style>
+:root{--pink1:#ff6b8d;--pink2:#ff98b3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter, Georgia, serif;
+  background:linear-gradient(160deg,#12010b,#000);
+  color:#fff;min-height:100vh;overflow-y:auto;padding-bottom:120px;
+}
+body::before{
+  content:"";position:fixed;inset:0;background:radial-gradient(circle at 50% 40%, rgba(255,75,120,0.12),transparent 50%);z-index:0;pointer-events:none;animation:glow 6s ease-in-out infinite;
+}
+@keyframes glow{0%{opacity:.4}50%{opacity:.85}100%{opacity:.4}}
+.container{max-width:920px;margin:72px auto;padding:22px}
+.card{background:rgba(255,255,255,0.03);padding:28px;border-radius:18px;text-align:center;box-shadow:0 18px 60px rgba(0,0,0,.6);position:relative;z-index:4}
+.card img{width:100%;max-width:420px;border-radius:16px;margin:0 auto 18px;display:block;object-fit:cover}
+.title{font-size:2rem;color:#ffdbe6;margin-bottom:8px}
+p.lead{font-size:1.15rem;line-height:1.8;color:#ffe6f0;margin-bottom:14px}
+.question{font-size:1.55rem;color:var(--pink2);font-weight:700;margin-top:12px}
+.signature{margin-top:18px;color:#ffc9dd;font-style:italic;font-size:1.05rem}
+
+
+/* swipe unlock container */
+#swipeContainer{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;width:86%;max-width:420px;height:56px;background:rgba(255,255,255,0.06);border-radius:40px;display:flex;align-items:center;padding:6px;z-index:40;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#swipeHandle{width:56px;height:44px;border-radius:999px;background:linear-gradient(90deg,var(--pink1),var(--pink2));display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;cursor:grab;box-shadow:0 10px 30px rgba(255,90,140,0.25);user-select:none;touch-action:none}
+#swipeText{flex:1;color:#ffdbe6;font-weight:700;text-align:center;padding-right:10px;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card" id="proposalCard">
+    <img src="photo-2.jpg" alt="Us">
+    <div class="title">Aparna…</div>
+
+    <p class="lead">I don’t promise a perfect life, but I promise a life where you’ll never walk alone.</p>
+    <p class="lead">Through smiles and silences, through dreams and doubts — I choose you.</p>
+
+    <div class="question" id="finalQuestion" style="opacity:0;transform:translateY(12px);transition:all .8s ease">
+      💍 Aparna, will you be my forever?
+    </div>
+
+    <div class="signature">— Vishnu</div>
+  </div>
+</div>
+<div id="waitingHint" style="
+  margin-top:24px;
+  font-size:1rem;
+  color:#ffdbe6;
+  opacity:0;
+  transition:opacity .6s ease;
+">
+  Take your time… I’ll be waiting 🌙
+</div>
+
+<!-- swipe unlock -->
+<div id="swipeContainer" aria-hidden="false">
+  <div id="swipeHandle">➜</div>
+  <div id="swipeText">Drag to reveal my question</div>
+</div>
+
+<script>
+/* keep content hidden until unlock */
+const handle = document.getElementById("swipeHandle");
+const container = document.getElementById("swipeContainer");
+const finalQ = document.getElementById("finalQuestion");
+const waitingHint = document.getElementById("waitingHint");
+
+let dragging = false;
+let unlocked = false;
+let startX = 0;
+
+const maxX = container.offsetWidth - handle.offsetWidth - 8;
+
+function startDrag(x) {
+  if (unlocked) return;
+  dragging = true;
+  startX = x - handle.offsetLeft;
+  handle.style.transition = "none";
+}
+
+function moveDrag(x) {
+  if (!dragging || unlocked) return;
+
+  let left = x - startX;
+  if (left < 6) left = 6;
+
+  if (left >= maxX) {
+    left = maxX;
+    unlockProposal();   // 🔑 FIRE ONCE
+    return;
+  }
+
+  handle.style.left = left + "px";
+}
+
+function endDrag() {
+  if (!dragging || unlocked) return;
+  dragging = false;
+  handle.style.transition = "left .3s ease";
+  handle.style.left = "6px";
+}
+
+function unlockProposal() {
+  if (unlocked) return;
+  unlocked = true;
+  dragging = false;
+
+  // Lock handle at end
+  handle.style.left = maxX + "px";
+
+  // Show proposal instantly
+  finalQ.style.opacity = "1";
+  finalQ.style.transform = "translateY(0)";
+
+  // Hide swipe container
+  container.style.transition = "opacity .4s ease";
+  container.style.opacity = "0";
+
+  setTimeout(() => {
+    container.style.display = "none";
+
+    // 🔥 IMMEDIATE NAVIGATION — USER ACTION BASED
+    window.location.href = "waiting.html";
+
+  }, 5);
+}
+
+/* DESKTOP */
+handle.addEventListener("mousedown", e => startDrag(e.clientX));
+window.addEventListener("mousemove", e => moveDrag(e.clientX));
+window.addEventListener("mouseup", endDrag);
+
+/* MOBILE */
+handle.addEventListener("touchstart", e => startDrag(e.touches[0].clientX), { passive: true });
+window.addEventListener("touchmove", e => moveDrag(e.touches[0].clientX), { passive: true });
+window.addEventListener("touchend", endDrag);
+</script>
+
+</body>
+</html>

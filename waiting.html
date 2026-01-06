@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waiting… 🌙</title>
+
+<style>
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Georgia", serif;
+}
+
+body {
+    background: linear-gradient(180deg, #120014, #000);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* SOFT BREATHING GLOW */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 140, 190, 0.18), transparent 65%);
+    animation: breathe 6s ease-in-out infinite;
+    z-index: 0;
+}
+
+@keyframes breathe {
+    0%   { opacity: 0.35; }
+    50%  { opacity: 0.9; }
+    100% { opacity: 0.35; }
+}
+
+/* CARD */
+.wait-card {
+    background: rgba(0,0,0,0.65);
+    padding: 36px 32px;
+    border-radius: 24px;
+    box-shadow: 0 0 50px rgba(255, 120, 170, 0.5);
+    max-width: 640px;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+    animation: fadeIn 1.4s ease forwards;
+}
+
+/* TEXT */
+.wait-card h1 {
+    font-size: 2.2rem;
+    color: #ffdbe6;
+    margin-bottom: 18px;
+}
+
+.wait-card p {
+    font-size: 1.25rem;
+    line-height: 1.9;
+    color: #ffe6f0;
+    margin-bottom: 14px;
+}
+
+/* SIGNATURE */
+.signature {
+    margin-top: 26px;
+    font-size: 1.15rem;
+    color: #ffc1d6;
+    font-style: italic;
+}
+
+/* SMALL HEART PULSE */
+.heart {
+    font-size: 1.8rem;
+    margin-bottom: 14px;
+    animation: heartBeat 1.8s infinite;
+}
+
+@keyframes heartBeat {
+    0%   { transform: scale(1); opacity: 0.7; }
+    50%  { transform: scale(1.25); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.7; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* MOBILE TWEAK */
+@media (max-width: 480px) {
+    .wait-card h1 {
+        font-size: 1.9rem;
+    }
+    .wait-card p {
+        font-size: 1.15rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wait-card">
+
+    <div class="heart">💖</div>
+
+    <h1>I’ll wait…</h1>
+
+    <p>
+        I shared my heart,<br>
+        not to hurry you,<br>
+        but to be honest with you.
+    </p>
+
+    <p>
+        Take your time,<br>
+        listen to your heart,<br>
+        I’ll be right here — quietly waiting.
+    </p>
+
+    <p>
+        Whatever your answer is,<br>
+        it will always be respected.
+    </p>
+
+    <div class="signature">
+        — Vishnu
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aparna — Kavithvam</title>
+<style>
+:root{--accent:#ff7b98;--soft:#ffdbe6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter, Georgia, serif;
+  background:linear-gradient(180deg,#120722 0%, #000 100%);
+  color:#fff;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  touch-action:manipulation;
+  overflow-x:hidden;
+  padding-bottom:120px;
+}
+
+/* petal (background image) */
+.petal{position:fixed;width:46px;height:46px;background:url("petal.png") no-repeat center/contain;pointer-events:none;opacity:.92;z-index:1;animation:fall linear infinite}
+@keyframes fall{from{transform:translateY(-10vh) rotate(0)}to{transform:translateY(110vh) rotate(360deg)}}
+
+/* card */
+.card{max-width:920px;margin:52px auto;padding:28px;border-radius:18px;background:rgba(255,255,255,0.03);box-shadow:0 8px 46px rgba(0,0,0,.6);position:relative;z-index:4}
+.card img{width:100%;max-width:420px;border-radius:16px;display:block;margin:0 auto 16px;object-fit:cover}
+
+/* title & poem */
+.title{font-size:2rem;color:var(--soft);text-align:center;margin-bottom:8px}
+.poem{color:#ffeaea;font-size:1.15rem;line-height:1.9;max-width:880px;margin:6px auto 14px;text-align:center;padding:0 8px}
+
+/* swipe reveal wrapper */
+#swipeContent{transform:translateY(120px);opacity:0;transition:all .8s cubic-bezier(.2,.9,.2,1)}
+#swipeContent.reveal{transform:translateY(0);opacity:1}
+
+/* initial swipe hint */
+#swipeHint{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);color:var(--soft);background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:999px;z-index:20;animation:pulse 1.6s infinite}
+@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+
+/* swipe-to-proceed control */
+#swipeToProposal{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:86%;max-width:360px;height:56px;background:linear-gradient(90deg,#200018,#30001d);border-radius:40px;display:flex;align-items:center;justify-content:center;z-index:30;box-shadow:0 8px 30px rgba(255,60,120,0.08);opacity:0;pointer-events:none;transition:opacity .4s}
+#swipeToProposal.show{opacity:1;pointer-events:auto}
+.swipe-bar{position:absolute;left:10px;width:70px;height:6px;background:linear-gradient(90deg,var(--accent),#ffb3c2);border-radius:999px}
+.swipe-text{color:var(--soft);font-weight:600;pointer-events:none}
+
+/* style small responsives */
+@media(min-width:640px){ .title{font-size:2.4rem} .poem{font-size:1.18rem}}
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="romantic-music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="card">
+  <img src="your-photo.jpg" alt="us">
+  <div class="title">Aparna…</div>
+
+  <!-- poem is hidden until reveal -->
+  <div id="swipeContent">
+    <div class="poem">
+      <p>💞 Nee peru naa gundello oka prema ganta,</p>
+      <p>Prathi saari adhi mogithe<br>Naa lokam motham navvuthundi ✨</p>
+      <p>🌸 Nee navvu naa jeevithaaniki velugu, Nee choopu naa kalalaku oopiri,</p>
+      <p>Nee pakkana unte samayam kooda prema tho aagipothundi 💕</p>
+      <p>💫 Nee cheyi naa chethilo unte ee prapancham motham chinnadi aipothundi,</p>
+      <p>🌷 Nenu nee pakkana undaalani maatrame kaadu, prathiroju oka navvu avaalani korukuntunna…</p>
+      <div style="margin-top:14px;font-weight:700;color:#ffd7e6">💍 Aparna… Ee gundeni neekichchi, Ee jeevitham motham Nee pakkana nadavacha? 💕</div>
+    </div>
+  </div>
+</div>
+
+<div id="swipeHint">⬆️ Swipe up to read my words</div>
+
+<!-- swipe to proposal control (appears after poem) -->
+<div id="swipeToProposal">
+  <div class="swipe-bar"></div>
+  <div class="swipe-text">⬆︎ Swipe here to continue</div>
+</div>
+
+<script>
+const music = document.getElementById('bgMusic');
+music.volume = 0.45;
+music.play().catch(()=>{ /* autoplay blocked — user can tap */ });
+
+/* petals generator */
+function spawnPetal(){
+  const p=document.createElement('div');
+  p.className='petal';
+  p.style.left=Math.random()*100+'vw';
+  p.style.animationDuration=(2.1+Math.random()*1.6)+'s';
+  p.style.opacity=(.6+Math.random()*.35);
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),5000);
+}
+setInterval(spawnPetal,260);
+
+/* reveal poem by swipe up or scroll */
+let swipeStartY=0, revealed=false;
+function revealPoem(){
+  if(revealed) return; revealed=true;
+  document.getElementById('swipeContent').classList.add('reveal');
+  document.getElementById('swipeHint').style.display='none';
+  setTimeout(()=>document.getElementById('swipeToProposal').classList.add('show'),900);
+}
+window.addEventListener('touchstart',e=>swipeStartY=e.touches[0].clientY,{passive:true});
+window.addEventListener('touchend',e=>{ if(swipeStartY - e.changedTouches[0].clientY > 60) revealPoem(); },{passive:true});
+window.addEventListener('wheel',e=>{ if(e.deltaY > 30) revealPoem(); },{passive:true});
+
+/* show swipe control then allow swipe up on it to navigate */
+const swipeCtrl = document.getElementById('swipeToProposal');
+let startY=0;
+swipeCtrl.addEventListener('touchstart',e=> startY=e.touches[0].clientY, {passive:true});
+swipeCtrl.addEventListener('touchend',e=>{
+  if(startY - e.changedTouches[0].clientY > 60) location.href='proposal.html';
+}, {passive:true});
+
+/* desktop: click the control to continue (fallback) */
+swipeCtrl.addEventListener('click', ()=> location.href='proposal.html');
+</script>
+</body>
+</html>
